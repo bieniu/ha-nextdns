@@ -1,0 +1,31 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Wprowadź klucz API NextDNS.",
+                "data": {
+                    "api_key": "Klucz API"
+                }
+            },
+            "profiles": {
+                "description": "Wybierz profil.",
+                "data": {
+                    "profile": "Profil"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Nie można się połączyć z API NextDNS.",
+            "invalid_api_key": "Nieprawidłowy klucz API.",
+            "unknown": "Nieznany błąd."
+        },
+        "abort": {
+            "already_configured": "Ten profil NextDNS jest juz skonfigurowany."
+        }
+    },
+    "system_health": {
+        "info": {
+            "can_reach_server": "Dostęp do serwera NextDNS"
+        }
+    }
+}

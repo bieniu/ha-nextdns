@@ -1,0 +1,8 @@
+{
+    "name": "NextDNS",
+    "homeassistant": "2022.2.0",
+    "iot_class": "Cloud Polling",
+    "domains": ["sensor"],
+    "zip_release": true,
+    "filename": "nextdns.zip"
+}

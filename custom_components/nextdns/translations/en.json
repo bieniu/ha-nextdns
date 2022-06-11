@@ -1,0 +1,31 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Please enter NextDNS API Key.",
+        "data": {
+          "api_key": "API Key"
+        }
+      },
+      "profiles": {
+        "description": "Please choose profile.",
+        "data": {
+          "profile": "Profile"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to NextDNS API.",
+      "invalid_api_key": "Invalid API Key.",
+      "unknown": "Unknown error."
+    },
+    "abort": {
+      "already_configured": "This NextDNS profile is already configured."
+    }
+  },
+  "system_health": {
+    "info": {
+      "can_reach_server": "Reach server"
+    }
+  }
+}
