@@ -253,6 +253,6 @@ class NextDnsSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        sensor_data = getattr(self.coordinator.data, self.entity_description.key)
+        sensor_data = getattr(self.coordinator.data, self.entity_description.parent_key)
         self._attr_native_value = getattr(sensor_data, self.entity_description.key)
         self.async_write_ha_state()
