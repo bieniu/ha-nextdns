@@ -1,4 +1,4 @@
-"""Support for the Zadnego Ale service."""
+"""Support for the NextDNS service."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -11,7 +11,7 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.entity import DeviceEntryType, DeviceInfo, EntityCategory
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -22,7 +22,7 @@ PARALLEL_UPDATES = 1
 
 
 @dataclass
-class NextDnsEntityRequiredKeysMixin:
+class NextDnsSensorRequiredKeysMixin:
     """Class for NextDNS entity required keys."""
 
     parrent_key: str
@@ -30,7 +30,7 @@ class NextDnsEntityRequiredKeysMixin:
 
 @dataclass
 class NextDnsSensorEntityDescription(
-    SensorEntityDescription, NextDnsEntityRequiredKeysMixin
+    SensorEntityDescription, NextDnsSensorRequiredKeysMixin
 ):
     """NextDNS sensor entity description."""
 
@@ -237,13 +237,7 @@ class NextDnsSensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Initialize."""
         super().__init__(coordinator)
-
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, str(coordinator.profile_id))},
-            name=coordinator.profile_name,
-            manufacturer="NextDNS",
-            entry_type=DeviceEntryType.SERVICE,
-        )
+        self._attr_device_info = coordinator.device_info
         self._attr_unique_id = f"{coordinator.profile_id}-{description.key}"
         self._attr_name = description.name.format(profile_name=coordinator.profile_name)
         sensor_data = getattr(coordinator.data, description.parrent_key)

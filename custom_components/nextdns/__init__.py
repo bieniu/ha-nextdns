@@ -13,13 +13,14 @@ from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.entity import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import CONF_PROFILE_ID, CONF_PROFILE_NAME, DEFAULT_UPDATE_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = ["sensor"]
+PLATFORMS = ["button", "sensor"]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -68,6 +69,12 @@ class NextDnsDataUpdateCoordinator(DataUpdateCoordinator):
         self.nextdns = nextdns
         self.profile_id = profile_id
         self.profile_name = profile_name
+        self.device_info = DeviceInfo(
+            identifiers={(DOMAIN, str(profile_id))},
+            name=profile_name,
+            manufacturer="NextDNS",
+            entry_type=DeviceEntryType.SERVICE,
+        )
 
         super().__init__(
             hass, _LOGGER, name=DOMAIN, update_interval=DEFAULT_UPDATE_INTERVAL
