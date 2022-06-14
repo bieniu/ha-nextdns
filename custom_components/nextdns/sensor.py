@@ -15,7 +15,7 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import NextDnsAnalyticsDataUpdateCoordinator
+from . import NextDnsAnalyticsUpdateCoordinator
 from .const import DOMAIN
 
 PARALLEL_UPDATES = 1
@@ -216,9 +216,9 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Add a NextDNS entities from a config_entry."""
-    coordinator: NextDnsAnalyticsDataUpdateCoordinator = hass.data[DOMAIN][
-        entry.entry_id
-    ]["analytics"]
+    coordinator: NextDnsAnalyticsUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
+        "analytics"
+    ]
 
     sensors = []
     for description in SENSORS:
@@ -230,11 +230,11 @@ async def async_setup_entry(
 class NextDnsSensor(CoordinatorEntity, SensorEntity):
     """Define an NextDNS sensor."""
 
-    coordinator: NextDnsAnalyticsDataUpdateCoordinator
+    coordinator: NextDnsAnalyticsUpdateCoordinator
 
     def __init__(
         self,
-        coordinator: NextDnsAnalyticsDataUpdateCoordinator,
+        coordinator: NextDnsAnalyticsUpdateCoordinator,
         description: SensorEntityDescription,
     ) -> None:
         """Initialize."""

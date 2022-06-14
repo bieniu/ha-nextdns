@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import timedelta
 import logging
 
 from aiohttp.client_exceptions import ClientConnectorError
@@ -13,6 +14,7 @@ from nextdns import (
     InvalidApiKeyError,
     NextDns,
 )
+from nextdns.model import NextDnsData
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
@@ -24,6 +26,8 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     ANALYTICS_UPDATE_INTERVAL,
+    ATTR_ANALYTICS,
+    ATTR_STATUS,
     CONF_PROFILE_ID,
     CONF_PROFILE_NAME,
     DOMAIN,
@@ -48,19 +52,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except (ApiError, ClientConnectorError, asyncio.TimeoutError) as err:
         raise ConfigEntryNotReady from err
 
-    analytics_coordinator = NextDnsAnalyticsDataUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name
+    analytics_coordinator = NextDnsAnalyticsUpdateCoordinator(
+        hass, nextdns, profile_id, profile_name, ANALYTICS_UPDATE_INTERVAL
     )
-    status_coordinator = NextDnsStatusDataUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name
+    status_coordinator = NextDnsStatusUpdateCoordinator(
+        hass, nextdns, profile_id, profile_name, STATUS_UPDATE_INTERVAL
     )
     await analytics_coordinator.async_config_entry_first_refresh()
     await status_coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN].setdefault(entry.entry_id, {})
-    hass.data[DOMAIN][entry.entry_id]["analytics"] = analytics_coordinator
-    hass.data[DOMAIN][entry.entry_id]["status"] = status_coordinator
+    hass.data[DOMAIN][entry.entry_id][ATTR_ANALYTICS] = analytics_coordinator
+    hass.data[DOMAIN][entry.entry_id][ATTR_STATUS] = status_coordinator
 
     hass.config_entries.async_setup_platforms(entry, PLATFORMS)
 
@@ -77,11 +81,16 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 
-class NextDnsAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
+class NextDnsUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching NextDNS data API."""
 
     def __init__(
-        self, hass: HomeAssistant, nextdns: NextDns, profile_id: str, profile_name: str
+        self,
+        hass: HomeAssistant,
+        nextdns: NextDns,
+        profile_id: str,
+        profile_name: str,
+        update_interval: timedelta,
     ) -> None:
         """Initialize."""
         self.nextdns = nextdns
@@ -94,9 +103,15 @@ class NextDnsAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
             entry_type=DeviceEntryType.SERVICE,
         )
 
-        super().__init__(
-            hass, _LOGGER, name=DOMAIN, update_interval=ANALYTICS_UPDATE_INTERVAL
-        )
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
+
+    async def _async_update_data(self) -> NextDnsData:
+        """Update data via library."""
+        raise NotImplementedError
+
+
+class NextDnsAnalyticsUpdateCoordinator(NextDnsUpdateCoordinator):
+    """Class to manage fetching NextDNS data API."""
 
     async def _async_update_data(self) -> AllAnalytics:
         """Update data via library."""
@@ -107,26 +122,8 @@ class NextDnsAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed(err) from err
 
 
-class NextDnsStatusDataUpdateCoordinator(DataUpdateCoordinator):
+class NextDnsStatusUpdateCoordinator(NextDnsUpdateCoordinator):
     """Class to manage fetching NextDNS data API."""
-
-    def __init__(
-        self, hass: HomeAssistant, nextdns: NextDns, profile_id: str, profile_name: str
-    ) -> None:
-        """Initialize."""
-        self.nextdns = nextdns
-        self.profile_id = profile_id
-        self.profile_name = profile_name
-        self.device_info = DeviceInfo(
-            identifiers={(DOMAIN, str(profile_id))},
-            name=profile_name,
-            manufacturer="NextDNS",
-            entry_type=DeviceEntryType.SERVICE,
-        )
-
-        super().__init__(
-            hass, _LOGGER, name=DOMAIN, update_interval=STATUS_UPDATE_INTERVAL
-        )
 
     async def _async_update_data(self) -> ConnectionStatus:
         """Update data via library."""

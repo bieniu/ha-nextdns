@@ -8,8 +8,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 
-from . import NextDnsAnalyticsDataUpdateCoordinator, NextDnsStatusDataUpdateCoordinator
-from .const import DOMAIN
+from . import NextDnsAnalyticsUpdateCoordinator, NextDnsStatusUpdateCoordinator
+from .const import ATTR_ANALYTICS, DOMAIN
 
 TO_REDACT = {CONF_API_KEY}
 
@@ -18,10 +18,10 @@ async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, config_entry: ConfigEntry
 ) -> dict:
     """Return diagnostics for a config entry."""
-    analytics_coordinator: NextDnsAnalyticsDataUpdateCoordinator = hass.data[DOMAIN][
+    analytics_coordinator: NextDnsAnalyticsUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
-    ]["analytics"]
-    status_coordinator: NextDnsStatusDataUpdateCoordinator = hass.data[DOMAIN][
+    ][ATTR_ANALYTICS]
+    status_coordinator: NextDnsStatusUpdateCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ]["status"]
 
