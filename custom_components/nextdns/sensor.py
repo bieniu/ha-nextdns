@@ -25,7 +25,7 @@ PARALLEL_UPDATES = 1
 class NextDnsSensorRequiredKeysMixin:
     """Class for NextDNS entity required keys."""
 
-    parrent_key: str
+    parent_key: str
 
 
 @dataclass
@@ -38,7 +38,7 @@ class NextDnsSensorEntityDescription(
 SENSORS = (
     NextDnsSensorEntityDescription(
         key="all_queries",
-        parrent_key="status",
+        parent_key="status",
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:dns",
         name="{profile_name} DNS Queries",
@@ -47,7 +47,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="blocked_queries",
-        parrent_key="status",
+        parent_key="status",
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:dns",
         name="{profile_name} DNS Queries Blocked",
@@ -56,7 +56,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="blocked_queries_ratio",
-        parrent_key="status",
+        parent_key="status",
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:dns",
         name="{profile_name} DNS Queries Blocked Ratio",
@@ -65,7 +65,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="doh_queries",
-        parrent_key="protocols",
+        parent_key="protocols",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:dns",
@@ -75,7 +75,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="dot_queries",
-        parrent_key="protocols",
+        parent_key="protocols",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:dns",
@@ -90,12 +90,12 @@ SENSORS = (
         entity_registry_enabled_default=False,
         name="{profile_name} UDP Queries",
         native_unit_of_measurement="queries",
-        parrent_key="protocols",
+        parent_key="protocols",
         state_class=SensorStateClass.MEASUREMENT,
     ),
     NextDnsSensorEntityDescription(
         key="doh_queries_ratio",
-        parrent_key="protocols",
+        parent_key="protocols",
         icon="mdi:dns",
         entity_category=EntityCategory.DIAGNOSTIC,
         name="{profile_name} DNS-over-HTTPS Queries Ratio",
@@ -104,7 +104,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="dot_queries_ratio",
-        parrent_key="protocols",
+        parent_key="protocols",
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:dns",
         name="{profile_name} DNS-over-TLS Queries Ratio",
@@ -113,7 +113,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="udp_queries_ratio",
-        parrent_key="protocols",
+        parent_key="protocols",
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:dns",
         name="{profile_name} UDP Queries Ratio",
@@ -122,7 +122,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="encrypted_queries",
-        parrent_key="encrypted",
+        parent_key="encrypted",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:lock",
@@ -132,7 +132,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="unencrypted_queries",
-        parrent_key="encrypted",
+        parent_key="encrypted",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:lock-open",
@@ -142,7 +142,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="encrypted_queries_ratio",
-        parrent_key="encrypted",
+        parent_key="encrypted",
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:lock",
         name="{profile_name} Encrypted Queries Ratio",
@@ -151,7 +151,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="ipv4_queries",
-        parrent_key="ip_versions",
+        parent_key="ip_versions",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:ip",
@@ -161,7 +161,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="ipv6_queries",
-        parrent_key="ip_versions",
+        parent_key="ip_versions",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:ip",
@@ -171,7 +171,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="ipv6_queries_ratio",
-        parrent_key="ip_versions",
+        parent_key="ip_versions",
         name="{profile_name} IPv6 Queries Ratio",
         native_unit_of_measurement=PERCENTAGE,
         icon="mdi:ip",
@@ -180,7 +180,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="validated_queries",
-        parrent_key="dnssec",
+        parent_key="dnssec",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:lock-check",
@@ -190,7 +190,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="not_validated_queries",
-        parrent_key="dnssec",
+        parent_key="dnssec",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:lock-alert",
@@ -200,7 +200,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="validated_queries_ratio",
-        parrent_key="dnssec",
+        parent_key="dnssec",
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:lock-check",
         name="{profile_name} DNSSEC Validated Queries Ratio",
@@ -240,7 +240,7 @@ class NextDnsSensor(CoordinatorEntity, SensorEntity):
         self._attr_device_info = coordinator.device_info
         self._attr_unique_id = f"{coordinator.profile_id}-{description.key}"
         self._attr_name = description.name.format(profile_name=coordinator.profile_name)
-        sensor_data = getattr(coordinator.data, description.parrent_key)
+        sensor_data = getattr(coordinator.data, description.parent_key)
         self._attr_native_value = getattr(sensor_data, description.key)
         self.entity_description = description
 
