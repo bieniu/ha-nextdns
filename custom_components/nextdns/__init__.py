@@ -6,7 +6,13 @@ import logging
 
 from aiohttp.client_exceptions import ClientConnectorError
 import async_timeout
-from nextdns import AllAnalytics, ApiError, InvalidApiKeyError, NextDns, ConnectionStatus
+from nextdns import (
+    AllAnalytics,
+    ApiError,
+    ConnectionStatus,
+    InvalidApiKeyError,
+    NextDns,
+)
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
