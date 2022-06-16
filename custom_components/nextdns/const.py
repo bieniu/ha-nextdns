@@ -2,12 +2,12 @@
 from datetime import timedelta
 
 ATTR_ANALYTICS = "analytics"
-ATTR_STATUS = "status"
+ATTR_CONNECTION = "connection"
 
 CONF_PROFILE_ID = "profile_id"
 CONF_PROFILE_NAME = "profile_name"
 
-ANALYTICS_UPDATE_INTERVAL = timedelta(minutes=10)
-STATUS_UPDATE_INTERVAL = timedelta(minutes=1)
+UPDATE_INTERVAL_ANALYTICS = timedelta(minutes=10)
+UPDATE_INTERVAL_CONNECTION = timedelta(minutes=1)
 
 DOMAIN = "nextdns"

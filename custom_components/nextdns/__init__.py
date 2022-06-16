@@ -25,13 +25,13 @@ from homeassistant.helpers.entity import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
-    ANALYTICS_UPDATE_INTERVAL,
     ATTR_ANALYTICS,
-    ATTR_STATUS,
+    ATTR_CONNECTION,
     CONF_PROFILE_ID,
     CONF_PROFILE_NAME,
     DOMAIN,
-    STATUS_UPDATE_INTERVAL,
+    UPDATE_INTERVAL_ANALYTICS,
+    UPDATE_INTERVAL_CONNECTION,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,18 +53,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raise ConfigEntryNotReady from err
 
     analytics_coordinator = NextDnsAnalyticsUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, ANALYTICS_UPDATE_INTERVAL
+        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_ANALYTICS
     )
-    status_coordinator = NextDnsStatusUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, STATUS_UPDATE_INTERVAL
+    connection_coordinator = NextDnsConnectionUpdateCoordinator(
+        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_CONNECTION
     )
     await analytics_coordinator.async_config_entry_first_refresh()
-    await status_coordinator.async_config_entry_first_refresh()
+    await connection_coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN].setdefault(entry.entry_id, {})
     hass.data[DOMAIN][entry.entry_id][ATTR_ANALYTICS] = analytics_coordinator
-    hass.data[DOMAIN][entry.entry_id][ATTR_STATUS] = status_coordinator
+    hass.data[DOMAIN][entry.entry_id][ATTR_CONNECTION] = connection_coordinator
 
     hass.config_entries.async_setup_platforms(entry, PLATFORMS)
 
@@ -122,8 +122,8 @@ class NextDnsAnalyticsUpdateCoordinator(NextDnsUpdateCoordinator):
             raise UpdateFailed(err) from err
 
 
-class NextDnsStatusUpdateCoordinator(NextDnsUpdateCoordinator):
-    """Class to manage fetching NextDNS status data from API."""
+class NextDnsConnectionUpdateCoordinator(NextDnsUpdateCoordinator):
+    """Class to manage fetching NextDNS connection data from API."""
 
     async def _async_update_data(self) -> ConnectionStatus:
         """Update data via library."""
