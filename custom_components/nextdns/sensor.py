@@ -15,8 +15,15 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import NextDnsAnalyticsUpdateCoordinator
-from .const import DOMAIN
+from . import NextDnsUpdateCoordinator
+from .const import (
+    ATTR_DNSSEC,
+    ATTR_ENCRYPTION,
+    ATTR_IP_VERSIONS,
+    ATTR_PROTOCOLS,
+    ATTR_STATUS,
+    DOMAIN,
+)
 
 PARALLEL_UPDATES = 1
 
@@ -25,7 +32,7 @@ PARALLEL_UPDATES = 1
 class NextDnsSensorRequiredKeysMixin:
     """Class for NextDNS entity required keys."""
 
-    parent_key: str
+    coordinator_type: str
 
 
 @dataclass
@@ -38,7 +45,7 @@ class NextDnsSensorEntityDescription(
 SENSORS = (
     NextDnsSensorEntityDescription(
         key="all_queries",
-        parent_key="status",
+        coordinator_type=ATTR_STATUS,
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:dns",
         name="{profile_name} DNS Queries",
@@ -47,7 +54,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="blocked_queries",
-        parent_key="status",
+        coordinator_type=ATTR_STATUS,
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:dns",
         name="{profile_name} DNS Queries Blocked",
@@ -56,7 +63,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="blocked_queries_ratio",
-        parent_key="status",
+        coordinator_type=ATTR_STATUS,
         entity_category=EntityCategory.DIAGNOSTIC,
         icon="mdi:dns",
         name="{profile_name} DNS Queries Blocked Ratio",
@@ -65,7 +72,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="doh_queries",
-        parent_key="protocols",
+        coordinator_type=ATTR_PROTOCOLS,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:dns",
@@ -75,7 +82,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="dot_queries",
-        parent_key="protocols",
+        coordinator_type=ATTR_PROTOCOLS,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:dns",
@@ -85,17 +92,18 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="udp_queries",
-        icon="mdi:dns",
+        coordinator_type=ATTR_PROTOCOLS,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
+        icon="mdi:dns",
         name="{profile_name} UDP Queries",
         native_unit_of_measurement="queries",
-        parent_key="protocols",
         state_class=SensorStateClass.MEASUREMENT,
     ),
     NextDnsSensorEntityDescription(
         key="doh_queries_ratio",
-        parent_key="protocols",
+        coordinator_type=ATTR_PROTOCOLS,
+        entity_registry_enabled_default=False,
         icon="mdi:dns",
         entity_category=EntityCategory.DIAGNOSTIC,
         name="{profile_name} DNS-over-HTTPS Queries Ratio",
@@ -104,8 +112,9 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="dot_queries_ratio",
-        parent_key="protocols",
+        coordinator_type=ATTR_PROTOCOLS,
         entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:dns",
         name="{profile_name} DNS-over-TLS Queries Ratio",
         native_unit_of_measurement=PERCENTAGE,
@@ -113,8 +122,9 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="udp_queries_ratio",
-        parent_key="protocols",
+        coordinator_type=ATTR_PROTOCOLS,
         entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:dns",
         name="{profile_name} UDP Queries Ratio",
         native_unit_of_measurement=PERCENTAGE,
@@ -122,7 +132,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="encrypted_queries",
-        parent_key="encrypted",
+        coordinator_type=ATTR_ENCRYPTION,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:lock",
@@ -132,7 +142,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="unencrypted_queries",
-        parent_key="encrypted",
+        coordinator_type=ATTR_ENCRYPTION,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:lock-open",
@@ -142,8 +152,9 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="encrypted_queries_ratio",
-        parent_key="encrypted",
+        coordinator_type=ATTR_ENCRYPTION,
         entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:lock",
         name="{profile_name} Encrypted Queries Ratio",
         native_unit_of_measurement=PERCENTAGE,
@@ -151,7 +162,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="ipv4_queries",
-        parent_key="ip_versions",
+        coordinator_type=ATTR_IP_VERSIONS,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:ip",
@@ -161,7 +172,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="ipv6_queries",
-        parent_key="ip_versions",
+        coordinator_type=ATTR_IP_VERSIONS,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:ip",
@@ -171,16 +182,17 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="ipv6_queries_ratio",
-        parent_key="ip_versions",
+        coordinator_type=ATTR_IP_VERSIONS,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        icon="mdi:ip",
         name="{profile_name} IPv6 Queries Ratio",
         native_unit_of_measurement=PERCENTAGE,
-        icon="mdi:ip",
         state_class=SensorStateClass.MEASUREMENT,
-        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     NextDnsSensorEntityDescription(
         key="validated_queries",
-        parent_key="dnssec",
+        coordinator_type=ATTR_DNSSEC,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:lock-check",
@@ -190,7 +202,7 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="not_validated_queries",
-        parent_key="dnssec",
+        coordinator_type=ATTR_DNSSEC,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:lock-alert",
@@ -200,8 +212,9 @@ SENSORS = (
     ),
     NextDnsSensorEntityDescription(
         key="validated_queries_ratio",
-        parent_key="dnssec",
+        coordinator_type=ATTR_DNSSEC,
         entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:lock-check",
         name="{profile_name} DNSSEC Validated Queries Ratio",
         native_unit_of_measurement=PERCENTAGE,
@@ -216,13 +229,13 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Add a NextDNS entities from a config_entry."""
-    coordinator: NextDnsAnalyticsUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
-        "analytics"
-    ]
+    sensors: list[NextDnsSensor] = []
+    coordinators = hass.data[DOMAIN][entry.entry_id]
 
-    sensors = []
     for description in SENSORS:
-        sensors.append(NextDnsSensor(coordinator, description))
+        sensors.append(
+            NextDnsSensor(coordinators[description.coordinator_type], description)
+        )
 
     async_add_entities(sensors)
 
@@ -230,11 +243,11 @@ async def async_setup_entry(
 class NextDnsSensor(CoordinatorEntity, SensorEntity):
     """Define an NextDNS sensor."""
 
-    coordinator: NextDnsAnalyticsUpdateCoordinator
+    coordinator: NextDnsUpdateCoordinator
 
     def __init__(
         self,
-        coordinator: NextDnsAnalyticsUpdateCoordinator,
+        coordinator: NextDnsUpdateCoordinator,
         description: SensorEntityDescription,
     ) -> None:
         """Initialize."""
@@ -242,13 +255,13 @@ class NextDnsSensor(CoordinatorEntity, SensorEntity):
         self._attr_device_info = coordinator.device_info
         self._attr_unique_id = f"{coordinator.profile_id}-{description.key}"
         self._attr_name = description.name.format(profile_name=coordinator.profile_name)
-        sensor_data = getattr(coordinator.data, description.parent_key)
-        self._attr_native_value = getattr(sensor_data, description.key)
+        self._attr_native_value = getattr(coordinator.data, description.key)
         self.entity_description = description
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        sensor_data = getattr(self.coordinator.data, self.entity_description.parent_key)
-        self._attr_native_value = getattr(sensor_data, self.entity_description.key)
+        self._attr_native_value = getattr(
+            self.coordinator.data, self.entity_description.key
+        )
         self.async_write_ha_state()
