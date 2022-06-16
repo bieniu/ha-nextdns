@@ -107,11 +107,11 @@ class NextDnsUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> NextDnsData:
         """Update data via library."""
-        raise NotImplementedError
+        raise NotImplementedError("Update method not implemented")
 
 
 class NextDnsAnalyticsUpdateCoordinator(NextDnsUpdateCoordinator):
-    """Class to manage fetching NextDNS data API."""
+    """Class to manage fetching NextDNS analytics data from API."""
 
     async def _async_update_data(self) -> AllAnalytics:
         """Update data via library."""
@@ -123,7 +123,7 @@ class NextDnsAnalyticsUpdateCoordinator(NextDnsUpdateCoordinator):
 
 
 class NextDnsStatusUpdateCoordinator(NextDnsUpdateCoordinator):
-    """Class to manage fetching NextDNS data API."""
+    """Class to manage fetching NextDNS status data from API."""
 
     async def _async_update_data(self) -> ConnectionStatus:
         """Update data via library."""
