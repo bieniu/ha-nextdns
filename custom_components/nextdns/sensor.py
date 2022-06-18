@@ -140,6 +140,16 @@ SENSORS = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     NextDnsSensorEntityDescription(
+        key="doq_queries_ratio",
+        coordinator_type=ATTR_PROTOCOLS,
+        entity_registry_enabled_default=False,
+        icon="mdi:dns",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        name="{profile_name} DNS-over-QUIC Queries Ratio",
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    NextDnsSensorEntityDescription(
         key="udp_queries_ratio",
         coordinator_type=ATTR_PROTOCOLS,
         entity_category=EntityCategory.DIAGNOSTIC,
