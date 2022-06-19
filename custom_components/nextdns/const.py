@@ -5,6 +5,7 @@ ATTR_CONNECTION = "connection"
 ATTR_DNSSEC = "dnssec"
 ATTR_ENCRYPTION = "encryption"
 ATTR_IP_VERSIONS = "ip_versions"
+ATTR_PROFILE = "profile"
 ATTR_PROTOCOLS = "protocols"
 ATTR_STATUS = "status"
 

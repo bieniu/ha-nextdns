@@ -8,19 +8,12 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 
-from . import (
-    NextDnsConnectionUpdateCoordinator,
-    NextDnsDnssecUpdateCoordinator,
-    NextDnsEncryptionUpdateCoordinator,
-    NextDnsIpVersionsUpdateCoordinator,
-    NextDnsProtocolsUpdateCoordinator,
-    NextDnsStatusUpdateCoordinator,
-)
 from .const import (
     ATTR_CONNECTION,
     ATTR_DNSSEC,
     ATTR_ENCRYPTION,
     ATTR_IP_VERSIONS,
+    ATTR_PROFILE,
     ATTR_PROTOCOLS,
     ATTR_STATUS,
     CONF_PROFILE_ID,
@@ -35,10 +28,12 @@ async def async_get_config_entry_diagnostics(
 ) -> dict:
     """Return diagnostics for a config entry."""
     coordinators = hass.data[DOMAIN][config_entry.entry_id]
+
     connection_coordinator = coordinators[ATTR_CONNECTION]
     dnssec_coordinator = coordinators[ATTR_DNSSEC]
     encryption_coordinator = coordinators[ATTR_ENCRYPTION]
     ip_versions_coordinator = coordinators[ATTR_IP_VERSIONS]
+    profile_coordinator = coordinators[ATTR_PROFILE]
     protocols_coordinator = coordinators[ATTR_PROTOCOLS]
     status_coordinator = coordinators[ATTR_STATUS]
 
@@ -51,6 +46,7 @@ async def async_get_config_entry_diagnostics(
         "encryption_coordinator_data": asdict(encryption_coordinator.data),
         "ip_versions_coordinator_data": asdict(ip_versions_coordinator.data),
         "protocols_coordinator_data": asdict(protocols_coordinator.data),
+        "profile_coordinator_data": asdict(profile_coordinator.data),
         "status_coordinator_data": asdict(status_coordinator.data),
     }
 
