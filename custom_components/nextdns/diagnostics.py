@@ -20,7 +20,22 @@ from .const import (
     DOMAIN,
 )
 
-TO_REDACT = {CONF_API_KEY, CONF_PROFILE_ID}
+TO_REDACT = {
+    CONF_API_KEY,
+    CONF_PROFILE_ID,
+    "allowlist",
+    "categories",
+    "ddns",
+    "denylist",
+    "dnscrypt",
+    "fingerprint",
+    "id",
+    "privacy",
+    "rewrites",
+    "services",
+    "setup",
+    "tlds",
+}
 
 
 async def async_get_config_entry_diagnostics(
@@ -46,7 +61,9 @@ async def async_get_config_entry_diagnostics(
         "encryption_coordinator_data": asdict(encryption_coordinator.data),
         "ip_versions_coordinator_data": asdict(ip_versions_coordinator.data),
         "protocols_coordinator_data": asdict(protocols_coordinator.data),
-        "profile_coordinator_data": asdict(profile_coordinator.data),
+        "profile_coordinator_data": async_redact_data(
+            asdict(profile_coordinator.data), TO_REDACT
+        ),
         "status_coordinator_data": asdict(status_coordinator.data),
     }
 
