@@ -64,22 +64,15 @@ class NextDnsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            for profile in self.nextdns.profiles:
-                if profile.name == user_input[CONF_PROFILE_NAME]:
-                    profile_id = profile.id
-                    profile_name = profile.name
-                    break
+            profile_name = user_input[CONF_PROFILE_NAME]
+            profile_id = self.nextdns.get_profile_id(profile_name)
 
             await self.async_set_unique_id(profile_id)
             self._abort_if_unique_id_configured()
 
             return self.async_create_entry(
                 title=profile_name,
-                data={
-                    **user_input,
-                    CONF_PROFILE_ID: profile_id,
-                    CONF_API_KEY: self.api_key,
-                },
+                data={CONF_PROFILE_ID: profile_id, CONF_API_KEY: self.api_key},
             )
 
         return self.async_show_form(

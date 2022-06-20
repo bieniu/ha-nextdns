@@ -38,10 +38,10 @@ from .const import (
     ATTR_PROTOCOLS,
     ATTR_STATUS,
     CONF_PROFILE_ID,
-    CONF_PROFILE_NAME,
     DOMAIN,
     UPDATE_INTERVAL_ANALYTICS,
     UPDATE_INTERVAL_CONNECTION,
+    UPDATE_INTERVAL_STATUS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,7 +53,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up NextDNS as config entry."""
     api_key = entry.data[CONF_API_KEY]
     profile_id = entry.data[CONF_PROFILE_ID]
-    profile_name = entry.data[CONF_PROFILE_NAME]
 
     websession = async_get_clientsession(hass)
     try:
@@ -63,25 +62,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raise ConfigEntryNotReady from err
 
     connection_coordinator = NextDnsConnectionUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_CONNECTION
+        hass, nextdns, profile_id, UPDATE_INTERVAL_CONNECTION
     )
     dnssec_coordinator = NextDnsDnssecUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_ANALYTICS
+        hass, nextdns, profile_id, UPDATE_INTERVAL_ANALYTICS
     )
     encryption_coordinator = NextDnsEncryptionUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_ANALYTICS
+        hass, nextdns, profile_id, UPDATE_INTERVAL_ANALYTICS
     )
     ip_versions_coordinator = NextDnsIpVersionsUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_ANALYTICS
+        hass, nextdns, profile_id, UPDATE_INTERVAL_ANALYTICS
     )
     profile_coordinator = NextDnsProfileUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_CONNECTION
+        hass, nextdns, profile_id, UPDATE_INTERVAL_CONNECTION
     )
     protocols_coordinator = NextDnsProtocolsUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_ANALYTICS
+        hass, nextdns, profile_id, UPDATE_INTERVAL_ANALYTICS
     )
     status_coordinator = NextDnsStatusUpdateCoordinator(
-        hass, nextdns, profile_id, profile_name, UPDATE_INTERVAL_ANALYTICS
+        hass, nextdns, profile_id, UPDATE_INTERVAL_STATUS
     )
 
     await asyncio.gather(
@@ -127,19 +126,18 @@ class NextDnsUpdateCoordinator(DataUpdateCoordinator):
         hass: HomeAssistant,
         nextdns: NextDns,
         profile_id: str,
-        profile_name: str,
         update_interval: timedelta,
     ) -> None:
         """Initialize."""
         self.nextdns = nextdns
         self.profile_id = profile_id
-        self.profile_name = profile_name
+        self.profile_name = nextdns.get_profile_name(profile_id)
         self.device_info = DeviceInfo(
             configuration_url=f"https://my.nextdns.io/{profile_id}/setup",
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, str(profile_id))},
             manufacturer="NextDNS Inc.",
-            name=profile_name,
+            name=self.profile_name,
         )
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
