@@ -4,8 +4,8 @@
   "documentation": "https://github.com/bieniu/nextdns",
   "issue_tracker": "https://github.com/bieniu/nextdns/issues",
   "codeowners": ["@bieniu"],
-  "requirements": ["git+https://github.com/bieniu/nextdns@dev#nextdns==0.0.9"],
+  "requirements": ["git+https://github.com/bieniu/nextdns@dev#nextdns==0.0.11"],
   "config_flow": true,
-  "version": "0.0.9",
+  "version": "0.0.11",
   "iot_class": "cloud_polling"
 }

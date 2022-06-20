@@ -13,29 +13,14 @@ from .const import (
     ATTR_DNSSEC,
     ATTR_ENCRYPTION,
     ATTR_IP_VERSIONS,
-    ATTR_PROFILE,
     ATTR_PROTOCOLS,
+    ATTR_SETTINGS,
     ATTR_STATUS,
     CONF_PROFILE_ID,
     DOMAIN,
 )
 
-TO_REDACT = {
-    CONF_API_KEY,
-    CONF_PROFILE_ID,
-    "allowlist",
-    "categories",
-    "ddns",
-    "denylist",
-    "dnscrypt",
-    "fingerprint",
-    "id",
-    "privacy",
-    "rewrites",
-    "services",
-    "setup",
-    "tlds",
-}
+TO_REDACT = {CONF_API_KEY, CONF_PROFILE_ID}
 
 
 async def async_get_config_entry_diagnostics(
@@ -48,7 +33,7 @@ async def async_get_config_entry_diagnostics(
     dnssec_coordinator = coordinators[ATTR_DNSSEC]
     encryption_coordinator = coordinators[ATTR_ENCRYPTION]
     ip_versions_coordinator = coordinators[ATTR_IP_VERSIONS]
-    profile_coordinator = coordinators[ATTR_PROFILE]
+    settings_coordinator = coordinators[ATTR_SETTINGS]
     protocols_coordinator = coordinators[ATTR_PROTOCOLS]
     status_coordinator = coordinators[ATTR_STATUS]
 
@@ -61,9 +46,7 @@ async def async_get_config_entry_diagnostics(
         "encryption_coordinator_data": asdict(encryption_coordinator.data),
         "ip_versions_coordinator_data": asdict(ip_versions_coordinator.data),
         "protocols_coordinator_data": asdict(protocols_coordinator.data),
-        "profile_coordinator_data": async_redact_data(
-            asdict(profile_coordinator.data), TO_REDACT
-        ),
+        "settings_coordinator_data": asdict(settings_coordinator.data),
         "status_coordinator_data": asdict(status_coordinator.data),
     }
 

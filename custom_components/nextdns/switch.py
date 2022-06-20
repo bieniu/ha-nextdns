@@ -10,8 +10,8 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import NextDnsProfileUpdateCoordinator
-from .const import ATTR_PROFILE, DOMAIN
+from . import NextDnsSettingsUpdateCoordinator
+from .const import ATTR_SETTINGS, DOMAIN
 
 PARALLEL_UPDATES = 1
 
@@ -26,8 +26,8 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Add NextDNS entities from a config_entry."""
-    coordinator: NextDnsProfileUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
-        ATTR_PROFILE
+    coordinator: NextDnsSettingsUpdateCoordinator = hass.data[DOMAIN][entry.entry_id][
+        ATTR_SETTINGS
     ]
 
     buttons: list[NextDnsSwitch] = []
@@ -36,12 +36,12 @@ async def async_setup_entry(
     async_add_entities(buttons, False)
 
 
-class NextDnsSwitch(CoordinatorEntity[NextDnsProfileUpdateCoordinator], SwitchEntity):
+class NextDnsSwitch(CoordinatorEntity[NextDnsSettingsUpdateCoordinator], SwitchEntity):
     """Define an NextDNS switch."""
 
     def __init__(
         self,
-        coordinator: NextDnsProfileUpdateCoordinator,
+        coordinator: NextDnsSettingsUpdateCoordinator,
         description: SwitchEntityDescription,
     ) -> None:
         """Initialize."""
@@ -49,13 +49,13 @@ class NextDnsSwitch(CoordinatorEntity[NextDnsProfileUpdateCoordinator], SwitchEn
         self._attr_device_info = coordinator.device_info
         self._attr_unique_id = f"{coordinator.profile_id}-{description.key}"
         self._attr_name = description.name.format(profile_name=coordinator.profile_name)
-        self._attr_is_on = coordinator.data.settings["web3"]
+        self._attr_is_on = coordinator.data.web3
         self.entity_description = description
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_is_on = self.coordinator.data.settings["web3"]
+        self._attr_is_on = self.coordinator.data.web3
         self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs: Any) -> None:

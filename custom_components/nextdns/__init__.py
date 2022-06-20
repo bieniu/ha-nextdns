@@ -17,7 +17,7 @@ from nextdns import (
     ConnectionStatus,
     InvalidApiKeyError,
     NextDns,
-    Profile,
+    Settings,
 )
 from nextdns.model import NextDnsData
 
@@ -34,13 +34,14 @@ from .const import (
     ATTR_DNSSEC,
     ATTR_ENCRYPTION,
     ATTR_IP_VERSIONS,
-    ATTR_PROFILE,
     ATTR_PROTOCOLS,
+    ATTR_SETTINGS,
     ATTR_STATUS,
     CONF_PROFILE_ID,
     DOMAIN,
     UPDATE_INTERVAL_ANALYTICS,
     UPDATE_INTERVAL_CONNECTION,
+    UPDATE_INTERVAL_SETTINGS,
     UPDATE_INTERVAL_STATUS,
 )
 
@@ -73,8 +74,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     ip_versions_coordinator = NextDnsIpVersionsUpdateCoordinator(
         hass, nextdns, profile_id, UPDATE_INTERVAL_ANALYTICS
     )
-    profile_coordinator = NextDnsProfileUpdateCoordinator(
-        hass, nextdns, profile_id, UPDATE_INTERVAL_CONNECTION
+    settings_coordinator = NextDnsSettingsUpdateCoordinator(
+        hass, nextdns, profile_id, UPDATE_INTERVAL_SETTINGS
     )
     protocols_coordinator = NextDnsProtocolsUpdateCoordinator(
         hass, nextdns, profile_id, UPDATE_INTERVAL_ANALYTICS
@@ -88,7 +89,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         dnssec_coordinator.async_config_entry_first_refresh(),
         encryption_coordinator.async_config_entry_first_refresh(),
         ip_versions_coordinator.async_config_entry_first_refresh(),
-        profile_coordinator.async_config_entry_first_refresh(),
+        settings_coordinator.async_config_entry_first_refresh(),
         protocols_coordinator.async_config_entry_first_refresh(),
         status_coordinator.async_config_entry_first_refresh(),
     )
@@ -99,7 +100,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id][ATTR_DNSSEC] = dnssec_coordinator
     hass.data[DOMAIN][entry.entry_id][ATTR_ENCRYPTION] = encryption_coordinator
     hass.data[DOMAIN][entry.entry_id][ATTR_IP_VERSIONS] = ip_versions_coordinator
-    hass.data[DOMAIN][entry.entry_id][ATTR_PROFILE] = profile_coordinator
+    hass.data[DOMAIN][entry.entry_id][ATTR_SETTINGS] = settings_coordinator
     hass.data[DOMAIN][entry.entry_id][ATTR_PROTOCOLS] = protocols_coordinator
     hass.data[DOMAIN][entry.entry_id][ATTR_STATUS] = status_coordinator
 
@@ -219,13 +220,13 @@ class NextDnsConnectionUpdateCoordinator(NextDnsUpdateCoordinator):
             raise UpdateFailed(err) from err
 
 
-class NextDnsProfileUpdateCoordinator(NextDnsUpdateCoordinator):
+class NextDnsSettingsUpdateCoordinator(NextDnsUpdateCoordinator):
     """Class to manage fetching NextDNS connection data from API."""
 
-    async def _async_update_data(self) -> Profile:
+    async def _async_update_data(self) -> Settings:
         """Update data via library."""
         try:
             with async_timeout.timeout(10):
-                return await self.nextdns.get_profile(self.profile_id)
+                return await self.nextdns.get_settings(self.profile_id)
         except (ApiError, ClientConnectorError, InvalidApiKeyError) as err:
             raise UpdateFailed(err) from err
