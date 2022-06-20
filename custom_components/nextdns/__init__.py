@@ -135,10 +135,11 @@ class NextDnsUpdateCoordinator(DataUpdateCoordinator):
         self.profile_id = profile_id
         self.profile_name = profile_name
         self.device_info = DeviceInfo(
-            identifiers={(DOMAIN, str(profile_id))},
-            name=profile_name,
-            manufacturer="NextDNS",
+            configuration_url=f"https://my.nextdns.io/{profile_id}/setup",
             entry_type=DeviceEntryType.SERVICE,
+            identifiers={(DOMAIN, str(profile_id))},
+            manufacturer="NextDNS Inc.",
+            name=profile_name,
         )
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
