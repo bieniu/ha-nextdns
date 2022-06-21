@@ -31,7 +31,7 @@ async def async_setup_entry(
     buttons: list[NextDnsButton] = []
     buttons.append(NextDnsButton(coordinator, CLEAR_LOGS_BUTTON))
 
-    async_add_entities(buttons, False)
+    async_add_entities(buttons)
 
 
 class NextDnsButton(CoordinatorEntity[NextDnsStatusUpdateCoordinator], ButtonEntity):

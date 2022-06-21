@@ -101,4 +101,4 @@ async def async_setup_entry(
     for description in SENSORS:
         sensors.append(description.entity_class(coordinator, description))
 
-    async_add_entities(sensors)
+    async_add_entities(sensors, True)

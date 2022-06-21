@@ -15,10 +15,43 @@ from .const import ATTR_SETTINGS, DOMAIN
 
 PARALLEL_UPDATES = 1
 
-CLEAR_LOGS_BUTTON = SwitchEntityDescription(
-    key="web3",
-    name="{profile_name} Web3",
-    entity_category=EntityCategory.CONFIG,
+SWITCHES = (
+    SwitchEntityDescription(
+        key="block_page",
+        name="{profile_name} Block Page",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:web-cancel",
+    ),
+    SwitchEntityDescription(
+        key="cache_boost",
+        name="{profile_name} Cache Boost",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:memory",
+    ),
+    SwitchEntityDescription(
+        key="cname_flattening",
+        name="{profile_name} CNAME Flattening",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:tournament"
+    ),
+    SwitchEntityDescription(
+        key="anonymized_ecs",
+        name="{profile_name} Anonymized EDNS Client Subnet",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:incognito",
+    ),
+    SwitchEntityDescription(
+        key="logs",
+        name="{profile_name} Logs",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:file-document-outline",
+    ),
+    SwitchEntityDescription(
+        key="web3",
+        name="{profile_name} Web3",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:web",
+    ),
 )
 
 
@@ -30,10 +63,11 @@ async def async_setup_entry(
         ATTR_SETTINGS
     ]
 
-    buttons: list[NextDnsSwitch] = []
-    buttons.append(NextDnsSwitch(coordinator, CLEAR_LOGS_BUTTON))
+    switches: list[NextDnsSwitch] = []
+    for description in SWITCHES:
+        switches.append(NextDnsSwitch(coordinator, description))
 
-    async_add_entities(buttons, False)
+    async_add_entities(switches)
 
 
 class NextDnsSwitch(CoordinatorEntity[NextDnsSettingsUpdateCoordinator], SwitchEntity):
@@ -49,19 +83,19 @@ class NextDnsSwitch(CoordinatorEntity[NextDnsSettingsUpdateCoordinator], SwitchE
         self._attr_device_info = coordinator.device_info
         self._attr_unique_id = f"{coordinator.profile_id}-{description.key}"
         self._attr_name = description.name.format(profile_name=coordinator.profile_name)
-        self._attr_is_on = coordinator.data.web3
+        self._attr_is_on = getattr(coordinator.data, description.key)
         self.entity_description = description
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_is_on = self.coordinator.data.web3
+        self._attr_is_on = getattr(self.coordinator.data, self.entity_description.key)
         self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on switch."""
-        result = await self.coordinator.nextdns.set_web3(
-            self.coordinator.profile_id, True
+        result = await self.coordinator.nextdns.set_setting(
+            self.coordinator.profile_id, self.entity_description.key, True
         )
 
         if result:
@@ -70,8 +104,8 @@ class NextDnsSwitch(CoordinatorEntity[NextDnsSettingsUpdateCoordinator], SwitchE
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn off switch."""
-        result = await self.coordinator.nextdns.set_web3(
-            self.coordinator.profile_id, False
+        result = await self.coordinator.nextdns.set_setting(
+            self.coordinator.profile_id, self.entity_description.key, False
         )
 
         if result:
