@@ -6,6 +6,6 @@
   "codeowners": ["@bieniu"],
   "requirements": ["nextdns==0.1.0"],
   "config_flow": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "iot_class": "cloud_polling"
 }

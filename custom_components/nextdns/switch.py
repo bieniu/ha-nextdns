@@ -32,7 +32,7 @@ SWITCHES = (
         key="cname_flattening",
         name="{profile_name} CNAME Flattening",
         entity_category=EntityCategory.CONFIG,
-        icon="mdi:tournament"
+        icon="mdi:tournament",
     ),
     SwitchEntityDescription(
         key="anonymized_ecs",
@@ -51,6 +51,91 @@ SWITCHES = (
         name="{profile_name} Web3",
         entity_category=EntityCategory.CONFIG,
         icon="mdi:web",
+    ),
+    SwitchEntityDescription(
+        key="allow_affiliate",
+        name="{profile_name} Allow Affiliate & Tracking Links",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="block_disguised_trackers",
+        name="{profile_name} Block Disguised Third-Party Trackers",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="ai_threat_detection",
+        name="{profile_name} AI-Driven Threat Detection",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="block_csam",
+        name="{profile_name} Block Child Sexual Abuse Material",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="block_nrd",
+        name="{profile_name} Block Newly Registered Domains",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="block_parked_domains",
+        name="{profile_name} Block Parked Domains",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="cryptojacking_protection",
+        name="{profile_name} Cryptojacking Protection",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="dga_protection",
+        name="{profile_name} Domain Generation Algorithms Protection",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="dns_rebinding_protection",
+        name="{profile_name} DNS Rebinding Protection",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:dns",
+    ),
+    SwitchEntityDescription(
+        key="google_safe_browsing",
+        name="{profile_name} Google Safe Browsing",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:google",
+    ),
+    SwitchEntityDescription(
+        key="idn_homograph_attacks_protection",
+        name="{profile_name} IDN Homograph Attacks Protection",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="threat_intelligence_feeds",
+        name="{profile_name} Threat Intelligence Feeds",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="typosquatting_protection",
+        name="{profile_name} Typosquatting Protection",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:keyboard-outline",
+    ),
+    SwitchEntityDescription(
+        key="block_bypass_methods",
+        name="{profile_name} Block Bypass Methods",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
+        key="safesearch",
+        name="{profile_name} Force SafeSearch",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:search-web",
+    ),
+    SwitchEntityDescription(
+        key="youtube_restricted_mode",
+        name="{profile_name} Force YouTube Restricted Mode",
+        entity_category=EntityCategory.CONFIG,
+        icon="mdi:youtube",
     ),
 )
 
