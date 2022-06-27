@@ -15,6 +15,5 @@ CONF_PROFILE_NAME = "profile_name"
 UPDATE_INTERVAL_ANALYTICS = timedelta(minutes=10)
 UPDATE_INTERVAL_CONNECTION = timedelta(minutes=1)
 UPDATE_INTERVAL_SETTINGS = timedelta(minutes=1)
-UPDATE_INTERVAL_STATUS = timedelta(minutes=1)
 
 DOMAIN = "nextdns"

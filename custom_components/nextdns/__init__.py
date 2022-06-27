@@ -42,7 +42,6 @@ from .const import (
     UPDATE_INTERVAL_ANALYTICS,
     UPDATE_INTERVAL_CONNECTION,
     UPDATE_INTERVAL_SETTINGS,
-    UPDATE_INTERVAL_STATUS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -81,7 +80,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass, nextdns, profile_id, UPDATE_INTERVAL_ANALYTICS
     )
     status_coordinator = NextDnsStatusUpdateCoordinator(
-        hass, nextdns, profile_id, UPDATE_INTERVAL_STATUS
+        hass, nextdns, profile_id, UPDATE_INTERVAL_ANALYTICS
     )
 
     await asyncio.gather(
