@@ -47,7 +47,7 @@ class NextDnsBinarySensor(CoordinatorEntity, BinarySensorEntity):
         """Initialize."""
         super().__init__(coordinator)
         self._attr_device_info = coordinator.device_info
-        self._attr_unique_id = f"{coordinator.profile_id}-{description.key}"
+        self._attr_unique_id = f"{coordinator.profile_id}_{description.key}"
         self.entity_description = description
 
     @callback

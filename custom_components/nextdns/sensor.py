@@ -282,7 +282,7 @@ class NextDnsSensor(CoordinatorEntity, SensorEntity):
         """Initialize."""
         super().__init__(coordinator)
         self._attr_device_info = coordinator.device_info
-        self._attr_unique_id = f"{coordinator.profile_id}-{description.key}"
+        self._attr_unique_id = f"{coordinator.profile_id}_{description.key}"
         self._attr_name = description.name.format(profile_name=coordinator.profile_name)
         self._attr_native_value = getattr(coordinator.data, description.key)
         self.entity_description = description
