@@ -73,6 +73,11 @@ SWITCHES = (
         entity_category=EntityCategory.CONFIG,
     ),
     SwitchEntityDescription(
+        key="block_ddns",
+        name="{profile_name} Block Dynamic DNS Hostnames",
+        entity_category=EntityCategory.CONFIG,
+    ),
+    SwitchEntityDescription(
         key="block_nrd",
         name="{profile_name} Block Newly Registered Domains",
         entity_category=EntityCategory.CONFIG,
