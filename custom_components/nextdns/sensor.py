@@ -110,6 +110,16 @@ SENSORS = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     NextDnsSensorEntityDescription(
+        key="tcp_queries",
+        coordinator_type=ATTR_PROTOCOLS,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        icon="mdi:dns",
+        name="{profile_name} TCP Queries",
+        native_unit_of_measurement="queries",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    NextDnsSensorEntityDescription(
         key="udp_queries",
         coordinator_type=ATTR_PROTOCOLS,
         entity_category=EntityCategory.DIAGNOSTIC,
